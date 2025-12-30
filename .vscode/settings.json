@@ -1,0 +1,16 @@
+{
+  "zenMode.fullScreen": false,
+  "zenMode.hideActivityBar": false,
+  "zenMode.hideStatusBar": false,
+  "workbench.editor.decorations.colors": true,
+  "workbench.view.alwaysShowHeaderActions": false,
+  "workbench.view.showQuietly": {
+    "workbench.panel.output": true
+  },
+  "search.seedOnFocus": true,
+  "workbench.editor.centeredLayoutFixedWidth": true,
+  "zenMode.centerLayout": false,
+  "workbench.editor.centeredLayoutAutoResize": false,
+  "workbench.layoutControl.type": "both",
+  "workbench.layoutControl.enabled": false
+}
