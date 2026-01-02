@@ -1,7 +1,6 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import AppSimple from './AppSimple.tsx'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import AppMinimal from './AppMinimal.jsx'
 
 // Add some basic CSS animations
 const style = document.createElement('style');
@@ -26,8 +25,8 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <AppSimple />
-  </StrictMode>,
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <AppMinimal />
+  </React.StrictMode>,
 )

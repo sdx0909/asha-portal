@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASHA-PORTAL - Healthcare Data Management System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: #4F46E5;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1F2937;
+            margin: 0 0 10px 0;
+        }
+
+        .subtitle {
+            color: #6B7280;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+
+        .input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            background: #4F46E5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background: #4338CA;
+        }
+
+        .button:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        .error {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            color: #DC2626;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #F0FDF4;
+            border: 1px solid #BBF7D0;
+            color: #166534;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .demo-credentials {
+            border-top: 1px solid #E5E7EB;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .demo-title {
+            font-size: 12px;
+            color: #6B7280;
+            text-align: center;
+            margin: 0 0 10px 0;
+        }
+
+        .demo-item {
+            background: #F9FAFB;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #374151;
+        }
+
+        .otp-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .otp-input {
+            width: 45px;
+            height: 45px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            border: 2px solid #D1D5DB;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .otp-input:focus {
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .timer {
+            text-align: center;
+            color: #6B7280;
+            font-size: 14px;
+            margin: 15px 0;
+        }
+
+        .back-button {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            color: #6B7280;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 2s infinite;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            min-height: 100vh;
+            background: #F9FAFB;
+            padding: 0;
+        }
+
+        .dashboard-header {
+            background: white;
+            border-bottom: 1px solid #E5E7EB;
+            padding: 0 20px;
+        }
+
+        .dashboard-nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+        }
+
+        .dashboard-logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .dashboard-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #E5E7EB;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="container">
+            <div class="header">
+                <div class="logo">🛡️</div>
+                <h1 class="title">ASHA-PORTAL</h1>
+                <p class="subtitle">Healthcare Data Management System</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="label" for="email">Email Address</label>
+                    <input type="email" id="email" class="input" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="label" for="password">Password</label>
+                    <div class="password-container">
+                        <input type="password" id="password" class="input" placeholder="Enter your password" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword()">👁️</button>
+                    </div>
+                </div>
+
+                <div id="loginError" class="error hidden"></div>
+
+                <button type="submit" class="button" id="loginBtn">🔐 Sign In</button>
+            </form>
+
+            <div class="demo-credentials">
+                <p class="demo-title">Demo Credentials (Development Only)</p>
+                <div class="demo-item"><strong>Admin:</strong> admin@gmail.com / Admin@123</div>
+                <div class="demo-item"><strong>ASHA:</strong> sunita.dixit.asha@gmail.com / Dixit.Sunita@123</div>
+            </div>
+        </div>
+
+        <!-- OTP Screen -->
+        <div id="otpScreen" class="container hidden">
+            <div class="header">
+                <div class="logo">🔐</div>
+                <h2 class="title">Verify OTP</h2>
+                <p class="subtitle">Enter the 6-digit code sent to your registered device</p>
+                <p id="otpEmail" style="color: #9CA3AF; font-size: 12px; margin-top: 5px;"></p>
+            </div>
+
+            <form id="otpForm">
+                <div class="form-group">
+                    <label class="label" style="text-align: center;">Enter 6-Digit OTP</label>
+                    <div class="otp-container">
+                        <input type="text" class="otp-input" maxlength="1" id="otp1">
+                        <input type="text" class="otp-input" maxlength="1" id="otp2">
+                        <input type="text" class="otp-input" maxlength="1" id="otp3">
+                        <input type="text" class="otp-input" maxlength="1" id="otp4">
+                        <input type="text" class="otp-input" maxlength="1" id="otp5">
+                        <input type="text" class="otp-input" maxlength="1" id="otp6">
+                    </div>
+                </div>
+
+                <div id="otpTimer" class="timer">⏰ OTP expires in 2:00</div>
+
+                <div id="otpError" class="error hidden"></div>
+                <div id="otpSuccess" class="success hidden"></div>
+
+                <button type="submit" class="button" id="otpBtn">✅ Verify OTP</button>
+                <button type="button" class="back-button" onclick="showLogin()">← Back to Login</button>
+            </form>
+
+            <div style="border-top: 1px solid #E5E7EB; padding-top: 15px; margin-top: 20px; text-align: center;">
+                <p style="font-size: 12px; color: #6B7280; margin: 0 0 5px 0;">
+                    Development Mode: Any 6-digit number works
+                </p>
+                <p style="font-size: 11px; color: #9CA3AF; margin: 0;">
+                    In production, OTP will be sent via SMS/Email
+                </p>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="dashboardScreen" class="dashboard hidden">
+            <header class="dashboard-header">
+                <div class="dashboard-nav">
+                    <div class="dashboard-logo">
+                        <span style="font-size: 24px; margin-right: 10px;" id="dashboardIcon">🛡️</span>
+                        <div>
+                            <h1 style="font-size: 20px; font-weight: bold; margin: 0; color: #1F2937;">ASHA-PORTAL</h1>
+                            <p id="dashboardSubtitle" style="font-size: 12px; color: #6B7280; margin: 0;">Dashboard</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-user">
+                        <span style="font-size: 20px;">🔔</span>
+                        <div style="text-align: right;">
+                            <p id="userEmail" style="font-size: 14px; font-weight: 500; margin: 0; color: #1F2937;"></p>
+                            <p id="userRole" style="font-size: 12px; color: #6B7280; margin: 0;"></p>
+                        </div>
+                        <button class="logout-btn" onclick="logout()" title="Logout">🚪</button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div style="margin-bottom: 30px;">
+                    <h2 id="welcomeMessage" style="font-size: 28px; font-weight: bold; color: #1F2937; margin: 0 0 10px 0;"></h2>
+                    <p id="welcomeSubtext" style="color: #6B7280; margin: 0;"></p>
+                </div>
+
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats will be populated by JavaScript -->
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;" id="dashboardContent">
+                    <!-- Dashboard content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let currentUser = null;
+        let otpTimer = null;
+        let timeRemaining = 120;
+
+        // Mock Users
+        const mockUsers = {
+            'admin@gmail.com': { id: '1', email: 'admin@gmail.com', password: 'Admin@123', role: 'ADMIN' },
+            'sunita.dixit.asha@gmail.com': { id: '2', email: 'sunita.dixit.asha@gmail.com', password: 'Dixit.Sunita@123', role: 'ASHA' }
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            checkExistingAuth();
+            setupEventListeners();
+        });
+
+        function checkExistingAuth() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    if (payload.exp * 1000 > Date.now()) {
+                        currentUser = { id: payload.userId, email: payload.email, role: payload.role };
+                        showDashboard();
+                        return;
+                    } else {
+                        localStorage.removeItem('authToken');
+                    }
+                } catch (error) {
+                    localStorage.removeItem('authToken');
+                }
+            }
+            showLogin();
+        }
+
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // OTP form
+            document.getElementById('otpForm').addEventListener('submit', handleOTPVerification);
+            
+            // OTP inputs
+            const otpInputs = document.querySelectorAll('.otp-input');
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => handleOTPInput(e, index));
+                input.addEventListener('keydown', (e) => handleOTPKeydown(e, index));
+            });
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
+            
+            if (!email || !password) {
+                showError('loginError', 'Please fill in all fields');
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '🔄 Authenticating...';
+            hideError('loginError');
+
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const user = mockUsers[email.toLowerCase()];
+            
+            if (!user || user.password !== password) {
+                showError('loginError', 'Invalid email or password');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '🔐 Sign In';
+                return;
+            }
+
+            currentUser = user;
+            showOTP();
+            
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '🔐 Sign In';
+        }
+
+        function handleOTPInput(e, index) {
+            const value = e.target.value;
+            
+            if (value && !/^\d$/.test(value)) {
+                e.target.value = '';
+                return;
+            }
+
+            if (value && index < 5) {
+                document.getElementById(`otp${index + 2}`).focus();
+            }
+        }
+
+        function handleOTPKeydown(e, index) {
+            if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                document.getElementById(`otp${index}`).focus();
+            }
+        }
+
+        async function handleOTPVerification(e) {
+            e.preventDefault();
+            
+            const otp = Array.from({length: 6}, (_, i) => 
+                document.getElementById(`otp${i + 1}`).value
+            ).join('');
+            
+            const otpBtn = document.getElementById('otpBtn');
+            const errorDiv = document.getElementById('otpError');
+            const successDiv = document.getElementById('otpSuccess');
+            
+            if (otp.length !== 6) {
+                showError('otpError', 'Please enter complete 6-digit OTP');
+                return;
+            }
+
+            otpBtn.disabled = true;
+            otpBtn.innerHTML = '🔄 Verifying...';
+            hideError('otpError');
+            hideError('otpSuccess');
+
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // For demo, accept any 6-digit OTP
+            if (otp.length === 6) {
+                const token = btoa(JSON.stringify({
+                    userId: currentUser.id,
+                    email: currentUser.email,
+                    role: currentUser.role,
+                    exp: Math.floor(Date.now() / 1000) + (30 * 60)
+                }));
+                
+                localStorage.setItem('authToken', token);
+                
+                showSuccess('otpSuccess', 'OTP verified successfully! Redirecting...');
+                
+                setTimeout(() => {
+                    showDashboard();
+                }, 1500);
+            } else {
+                showError('otpError', 'Invalid OTP');
+                clearOTPInputs();
+            }
+            
+            otpBtn.disabled = false;
+            otpBtn.innerHTML = '✅ Verify OTP';
+        }
+
+        function showLogin() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('otpScreen').classList.add('hidden');
+            document.getElementById('dashboardScreen').classList.add('hidden');
+            document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            clearForm('loginForm');
+        }
+
+        function showOTP() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('otpScreen').classList.remove('hidden');
+            document.getElementById('dashboardScreen').classList.add('hidden');
+            document.getElementById('otpEmail').textContent = currentUser.email;
+            startOTPTimer();
+            clearOTPInputs();
+            document.getElementById('otp1').focus();
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('otpScreen').classList.add('hidden');
+            document.getElementById('dashboardScreen').classList.remove('hidden');
+            document.body.style.background = '#F9FAFB';
+            
+            if (otpTimer) {
+                clearInterval(otpTimer);
+            }
+            
+            populateDashboard();
+        }
+
+        function populateDashboard() {
+            const isAdmin = currentUser.role === 'ADMIN';
+            
+            // Update header
+            document.getElementById('dashboardIcon').textContent = isAdmin ? '🛡️' : '❤️';
+            document.getElementById('dashboardSubtitle').textContent = isAdmin ? 'Admin Dashboard' : 'ASHA Worker Dashboard';
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userRole').textContent = isAdmin ? 'Administrator' : 'Accredited Social Health Activist';
+            
+            // Update welcome message
+            document.getElementById('welcomeMessage').textContent = isAdmin ? 
+                'Welcome back, Administrator' : 'Good morning, Sunita! 🌅';
+            document.getElementById('welcomeSubtext').textContent = isAdmin ?
+                "Here's what's happening with your healthcare management system today." :
+                "You have 3 pending tasks today. Let's make a difference in your community's health.";
+            
+            // Populate stats
+            const stats = isAdmin ? [
+                { title: 'Total ASHA Workers', value: '1,247', icon: '👥' },
+                { title: 'Active Cases', value: '3,891', icon: '📊' },
+                { title: 'Reports Generated', value: '156', icon: '📄' },
+                { title: 'System Health', value: '99.9%', icon: '🛡️' }
+            ] : [
+                { title: 'Patients Assigned', value: '127', icon: '👥' },
+                { title: 'Visits This Month', value: '89', icon: '🏥' },
+                { title: 'Pending Reports', value: '3', icon: '📄' },
+                { title: 'Health Score', value: '94%', icon: '❤️' }
+            ];
+            
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = stats.map(stat => `
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p style="font-size: 14px; color: #6B7280; margin: 0 0 5px 0;">${stat.title}</p>
+                            <p style="font-size: 24px; font-weight: bold; color: #1F2937; margin: 0;">${stat.value}</p>
+                        </div>
+                        <div style="font-size: 30px; background: #EEF2FF; padding: 10px; border-radius: 50%;">
+                            ${stat.icon}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Populate dashboard content
+            const dashboardContent = document.getElementById('dashboardContent');
+            if (isAdmin) {
+                dashboardContent.innerHTML = `
+                    <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #E5E7EB;">
+                        <h3 style="font-size: 18px; font-weight: bold; color: #1F2937; margin: 0 0 15px 0;">Recent Activities</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #F3F4F6;">
+                                <div style="width: 8px; height: 8px; border-radius: 50%; background: #4F46E5; margin-right: 15px;"></div>
+                                <div>
+                                    <p style="font-size: 14px; font-weight: 500; color: #1F2937; margin: 0 0 2px 0;">Sunita Dixit updated patient record</p>
+                                    <p style="font-size: 12px; color: #6B7280; margin: 0;">2 minutes ago</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #F3F4F6;">
+                                <div style="width: 8px; height: 8px; border-radius: 50%; background: #4F46E5; margin-right: 15px;"></div>
+                                <div>
+                                    <p style="font-size: 14px; font-weight: 500; color: #1F2937; margin: 0 0 2px 0;">Priya Sharma generated monthly report</p>
+                                    <p style="font-size: 12px; color: #6B7280; margin: 0;">15 minutes ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #E5E7EB;">
+                        <h3 style="font-size: 18px; font-weight: bold; color: #1F2937; margin: 0 0 15px 0;">System Status</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 14px; color: #6B7280;">Database</span>
+                                <span style="font-size: 14px; color: #10B981; display: flex; align-items: center;">
+                                    <span style="width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 6px;"></span>
+                                    Online
+                                </span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 14px; color: #6B7280;">API Services</span>
+                                <span style="font-size: 14px; color: #10B981; display: flex; align-items: center;">
+                                    <span style="width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 6px;"></span>
+                                    Operational
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                dashboardContent.innerHTML = `
+                    <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #E5E7EB;">
+                        <h3 style="font-size: 18px; font-weight: bold; color: #1F2937; margin: 0 0 20px 0;">Today's Schedule</h3>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="padding: 15px; border-radius: 8px; border-left: 4px solid #EF4444; background: #FEF2F2;">
+                                <h4 style="font-size: 14px; font-weight: 500; color: #1F2937; margin: 0 0 8px 0;">Visit Mrs. Sharma for diabetes checkup</h4>
+                                <div style="font-size: 12px; color: #6B7280;">🕐 10:00 AM - 📍 Village: Rampur</div>
+                            </div>
+                            <div style="padding: 15px; border-radius: 8px; border-left: 4px solid #F59E0B; background: #FFFBEB;">
+                                <h4 style="font-size: 14px; font-weight: 500; color: #1F2937; margin: 0 0 8px 0;">Vaccination drive at Anganwadi Center</h4>
+                                <div style="font-size: 12px; color: #6B7280;">🕐 2:00 PM - 📍 Main Road</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #E5E7EB;">
+                        <h3 style="font-size: 18px; font-weight: bold; color: #1F2937; margin: 0 0 20px 0;">Recent Patients</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #F9FAFB; border-radius: 6px;">
+                                <div>
+                                    <p style="font-size: 14px; font-weight: 500; color: #1F2937; margin: 0 0 4px 0;">Sunita Devi</p>
+                                    <p style="font-size: 12px; color: #6B7280; margin: 0;">Hypertension - 2 days ago</p>
+                                </div>
+                                <span style="padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; background: #D1FAE5; color: #065F46;">Stable</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #F9FAFB; border-radius: 6px;">
+                                <div>
+                                    <p style="font-size: 14px; font-weight: 500; color: #1F2937; margin: 0 0 4px 0;">Ramesh Kumar</p>
+                                    <p style="font-size: 12px; color: #6B7280; margin: 0;">Diabetes - 1 week ago</p>
+                                </div>
+                                <span style="padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; background: #FEF3C7; color: #92400E;">Attention</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function startOTPTimer() {
+            timeRemaining = 120;
+            updateTimerDisplay();
+            
+            otpTimer = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(otpTimer);
+                    document.getElementById('otpBtn').disabled = true;
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            const timerElement = document.getElementById('otpTimer');
+            if (timeRemaining > 0) {
+                timerElement.textContent = `⏰ OTP expires in ${display}`;
+                timerElement.style.color = '#6B7280';
+            } else {
+                timerElement.textContent = '⚠️ OTP has expired';
+                timerElement.style.color = '#DC2626';
+            }
+        }
+
+        function clearOTPInputs() {
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`otp${i}`).value = '';
+            }
+        }
+
+        function clearForm(formId) {
+            document.getElementById(formId).reset();
+            hideError('loginError');
+            hideError('otpError');
+            hideError('otpSuccess');
+        }
+
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = `⚠️ ${message}`;
+            element.classList.remove('hidden');
+        }
+
+        function hideError(elementId) {
+            document.getElementById(elementId).classList.add('hidden');
+        }
+
+        function showSuccess(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = `✅ ${message}`;
+            element.classList.remove('hidden');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('authToken');
+                currentUser = null;
+                if (otpTimer) {
+                    clearInterval(otpTimer);
+                }
+                showLogin();
+            }
+        }
+    </script>
+</body>
+</html>
