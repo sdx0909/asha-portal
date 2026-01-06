@@ -28,12 +28,7 @@ const mockUsers = {
 };
 
 // Mock OTP storage (in production, use Redis or database)
-const otpStorage = new Map();
-
-// Utility functions
-const generateOTP = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-};
+// Utility functions removed - no longer need OTP generation
 
 const generateJWT = (user) => {
   const payload = {
@@ -80,105 +75,12 @@ app.post('/api/auth/login', (req, res) => {
       });
     }
 
-    // Generate OTP
-    const otp = generateOTP();
-    const otpKey = `${user.id}_${email}`;
-    
-    // Store OTP with expiration (2 minutes)
-    otpStorage.set(otpKey, {
-      otp,
-      expiresAt: Date.now() + (2 * 60 * 1000),
-      attempts: 0
-    });
-
-    console.log(`🔐 OTP for ${email}: ${otp}`);
-
-    res.json({
-      success: true,
-      message: 'Login successful. OTP sent for verification.',
-      data: {
-        userId: user.id,
-        email: user.email,
-        role: user.role,
-        requiresOTP: true,
-        // For demo purposes only
-        otp: process.env.NODE_ENV === 'development' ? otp : undefined
-      }
-    });
-
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-});
-
-// OTP verification endpoint
-app.post('/api/auth/verify-otp', (req, res) => {
-  try {
-    const { userId, email, otp } = req.body;
-
-    if (!userId || !email || !otp) {
-      return res.status(400).json({
-        success: false,
-        message: 'User ID, email, and OTP are required'
-      });
-    }
-
-    const otpKey = `${userId}_${email}`;
-    const storedOTP = otpStorage.get(otpKey);
-
-    if (!storedOTP) {
-      return res.status(401).json({
-        success: false,
-        message: 'OTP not found or expired'
-      });
-    }
-
-    if (Date.now() > storedOTP.expiresAt) {
-      otpStorage.delete(otpKey);
-      return res.status(401).json({
-        success: false,
-        message: 'OTP has expired'
-      });
-    }
-
-    if (storedOTP.otp !== otp) {
-      storedOTP.attempts += 1;
-      
-      if (storedOTP.attempts >= 3) {
-        otpStorage.delete(otpKey);
-        return res.status(401).json({
-          success: false,
-          message: 'Too many failed attempts. Please request a new OTP.'
-        });
-      }
-
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid OTP'
-      });
-    }
-
-    // OTP verified successfully
-    otpStorage.delete(otpKey);
-
-    const user = Object.values(mockUsers).find(u => u.id === userId);
-    
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
-
+    // Login successful - generate JWT token immediately
     const token = generateJWT(user);
 
     res.json({
       success: true,
-      message: 'OTP verified successfully',
+      message: 'Login successful',
       data: {
         token,
         user: {
@@ -191,7 +93,7 @@ app.post('/api/auth/verify-otp', (req, res) => {
     });
 
   } catch (error) {
-    console.error('OTP verification error:', error);
+    console.error('Login error:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error'
@@ -199,55 +101,7 @@ app.post('/api/auth/verify-otp', (req, res) => {
   }
 });
 
-// Resend OTP endpoint
-app.post('/api/auth/resend-otp', (req, res) => {
-  try {
-    const { userId, email } = req.body;
-
-    if (!userId || !email) {
-      return res.status(400).json({
-        success: false,
-        message: 'User ID and email are required'
-      });
-    }
-
-    const user = Object.values(mockUsers).find(u => u.id === userId && u.email === email);
-    
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
-
-    // Generate new OTP
-    const otp = generateOTP();
-    const otpKey = `${userId}_${email}`;
-    
-    otpStorage.set(otpKey, {
-      otp,
-      expiresAt: Date.now() + (2 * 60 * 1000),
-      attempts: 0
-    });
-
-    console.log(`🔐 Resent OTP for ${email}: ${otp}`);
-
-    res.json({
-      success: true,
-      message: 'OTP resent successfully',
-      data: {
-        otp: process.env.NODE_ENV === 'development' ? otp : undefined
-      }
-    });
-
-  } catch (error) {
-    console.error('Resend OTP error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
-  }
-});
+// OTP endpoints removed - using direct login authentication
 
 // Logout endpoint
 app.post('/api/auth/logout', (req, res) => {
@@ -395,8 +249,6 @@ app.listen(PORT, () => {
   console.log(`📋 Available endpoints:`);
   console.log(`   GET  /api/health`);
   console.log(`   POST /api/auth/login`);
-  console.log(`   POST /api/auth/verify-otp`);
-  console.log(`   POST /api/auth/resend-otp`);
   console.log(`   POST /api/auth/logout`);
   console.log(`   GET  /api/auth/me`);
   console.log(`   GET  /api/auth/validate-token`);

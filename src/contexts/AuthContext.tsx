@@ -3,9 +3,6 @@ import {
   User, 
   LoginCredentials, 
   LoginResponse, 
-  OTPVerificationData, 
-  OTPVerificationResponse,
-  ResendOTPData,
   AuthContextType 
 } from '../types/auth.types';
 import { authAPI } from '../utils/api';
@@ -151,30 +148,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       const response = await authAPI.login(credentials);
       
-      if (response.success) {
-        // Login successful, but requires OTP verification
-        // Don't set authentication state yet
-        dispatch({ type: 'SET_LOADING', payload: false });
-        return response;
-      } else {
-        dispatch({ type: 'SET_LOADING', payload: false });
-        throw new Error(response.message || 'Login failed');
-      }
-    } catch (error: any) {
-      dispatch({ type: 'SET_LOADING', payload: false });
-      throw error;
-    }
-  };
-
-  /**
-   * Verify OTP and complete authentication
-   */
-  const verifyOTP = async (data: OTPVerificationData): Promise<OTPVerificationResponse> => {
-    try {
-      dispatch({ type: 'SET_LOADING', payload: true });
-      
-      const response = await authAPI.verifyOTP(data);
-      
       if (response.success && response.data) {
         // Store token in localStorage
         localStorage.setItem('authToken', response.data.token);
@@ -191,25 +164,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return response;
       } else {
         dispatch({ type: 'SET_LOADING', payload: false });
-        throw new Error(response.message || 'OTP verification failed');
+        throw new Error(response.message || 'Login failed');
       }
     } catch (error: any) {
       dispatch({ type: 'SET_LOADING', payload: false });
-      throw error;
-    }
-  };
-
-  /**
-   * Resend OTP
-   */
-  const resendOTP = async (data: ResendOTPData): Promise<void> => {
-    try {
-      const response = await authAPI.resendOTP(data);
-      
-      if (!response.success) {
-        throw new Error(response.message || 'Failed to resend OTP');
-      }
-    } catch (error: any) {
       throw error;
     }
   };
@@ -269,8 +227,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isAuthenticated: state.isAuthenticated,
     isLoading: state.isLoading,
     login,
-    verifyOTP,
-    resendOTP,
     logout,
     checkAuth
   };

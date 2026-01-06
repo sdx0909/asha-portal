@@ -2,9 +2,6 @@ import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import { 
   LoginCredentials, 
   LoginResponse, 
-  OTPVerificationData, 
-  OTPVerificationResponse,
-  ResendOTPData,
   ApiResponse,
   User 
 } from '../types/auth.types';
@@ -71,30 +68,6 @@ export const authAPI = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
     try {
       const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
-      return response.data;
-    } catch (error) {
-      handleApiError(error);
-    }
-  },
-
-  /**
-   * Verify OTP
-   */
-  verifyOTP: async (data: OTPVerificationData): Promise<OTPVerificationResponse> => {
-    try {
-      const response = await apiClient.post<OTPVerificationResponse>('/auth/verify-otp', data);
-      return response.data;
-    } catch (error) {
-      handleApiError(error);
-    }
-  },
-
-  /**
-   * Resend OTP
-   */
-  resendOTP: async (data: ResendOTPData): Promise<ApiResponse> => {
-    try {
-      const response = await apiClient.post<ApiResponse>('/auth/resend-otp', data);
       return response.data;
     } catch (error) {
       handleApiError(error);

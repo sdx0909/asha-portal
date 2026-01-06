@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LoginSimple from './components/LoginSimple';
-import OTPSimple from './components/OTPSimple';
+// OTP component import removed - using direct login authentication
 import AdminDashboardSimple from './pages/AdminDashboardSimple';
 import ASHADashboardSimple from './pages/ASHADashboardSimple';
 
@@ -17,7 +17,7 @@ interface LoginData {
   role: string;
 }
 
-type AppState = 'loading' | 'login' | 'otp' | 'dashboard';
+type AppState = 'loading' | 'login' | 'dashboard';
 
 function AppSimple() {
   const [appState, setAppState] = useState<AppState>('loading');
@@ -60,19 +60,13 @@ function AppSimple() {
   }, []);
 
   const handleLoginSuccess = (data: LoginData) => {
-    setLoginData(data);
-    setAppState('otp');
-  };
-
-  const handleOTPSuccess = () => {
-    if (loginData) {
-      setUser({
-        id: loginData.userId,
-        email: loginData.email,
-        role: loginData.role as 'ADMIN' | 'ASHA'
-      });
-      setAppState('dashboard');
-    }
+    // Direct login success - set user and go to dashboard
+    setUser({
+      id: data.userId,
+      email: data.email,
+      role: data.role as 'ADMIN' | 'ASHA'
+    });
+    setAppState('dashboard');
   };
 
   const handleBackToLogin = () => {
@@ -121,18 +115,6 @@ function AppSimple() {
   // Login screen
   if (appState === 'login') {
     return <LoginSimple onLoginSuccess={handleLoginSuccess} />;
-  }
-
-  // OTP verification screen
-  if (appState === 'otp' && loginData) {
-    return (
-      <OTPSimple
-        userId={loginData.userId}
-        email={loginData.email}
-        onVerificationSuccess={handleOTPSuccess}
-        onBack={handleBackToLogin}
-      />
-    );
   }
 
   // Dashboard screen

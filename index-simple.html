@@ -168,35 +168,7 @@
             color: #374151;
         }
 
-        .otp-container {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin: 15px 0;
-        }
-
-        .otp-input {
-            width: 45px;
-            height: 45px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            border: 2px solid #D1D5DB;
-            border-radius: 6px;
-            outline: none;
-        }
-
-        .otp-input:focus {
-            border-color: #4F46E5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .timer {
-            text-align: center;
-            color: #6B7280;
-            font-size: 14px;
-            margin: 15px 0;
-        }
+        /* OTP styles removed - using direct login authentication */
 
         .back-button {
             width: 100%;
@@ -322,46 +294,8 @@
             </div>
         </div>
 
-        <!-- OTP Screen -->
-        <div id="otpScreen" class="container hidden">
-            <div class="header">
-                <div class="logo">🔐</div>
-                <h2 class="title">Verify OTP</h2>
-                <p class="subtitle">Enter the 6-digit code sent to your registered device</p>
-                <p id="otpEmail" style="color: #9CA3AF; font-size: 12px; margin-top: 5px;"></p>
-            </div>
-
-            <form id="otpForm">
-                <div class="form-group">
-                    <label class="label" style="text-align: center;">Enter 6-Digit OTP</label>
-                    <div class="otp-container">
-                        <input type="text" class="otp-input" maxlength="1" id="otp1">
-                        <input type="text" class="otp-input" maxlength="1" id="otp2">
-                        <input type="text" class="otp-input" maxlength="1" id="otp3">
-                        <input type="text" class="otp-input" maxlength="1" id="otp4">
-                        <input type="text" class="otp-input" maxlength="1" id="otp5">
-                        <input type="text" class="otp-input" maxlength="1" id="otp6">
-                    </div>
-                </div>
-
-                <div id="otpTimer" class="timer">⏰ OTP expires in 2:00</div>
-
-                <div id="otpError" class="error hidden"></div>
-                <div id="otpSuccess" class="success hidden"></div>
-
-                <button type="submit" class="button" id="otpBtn">✅ Verify OTP</button>
-                <button type="button" class="back-button" onclick="showLogin()">← Back to Login</button>
-            </form>
-
-            <div style="border-top: 1px solid #E5E7EB; padding-top: 15px; margin-top: 20px; text-align: center;">
-                <p style="font-size: 12px; color: #6B7280; margin: 0 0 5px 0;">
-                    Development Mode: Any 6-digit number works
-                </p>
-                <p style="font-size: 11px; color: #9CA3AF; margin: 0;">
-                    In production, OTP will be sent via SMS/Email
-                </p>
-            </div>
-        </div>
+        <!-- Login successful - redirecting to dashboard -->
+        <!-- OTP screen removed - using direct login authentication -->
 
         <!-- Dashboard Screen -->
         <div id="dashboardScreen" class="dashboard hidden">
@@ -406,8 +340,7 @@
     <script>
         // Application State
         let currentUser = null;
-        let otpTimer = null;
-        let timeRemaining = 120;
+        // OTP timer removed - using direct login authentication
 
         // Mock Users
         const mockUsers = {
@@ -443,16 +376,7 @@
         function setupEventListeners() {
             // Login form
             document.getElementById('loginForm').addEventListener('submit', handleLogin);
-            
-            // OTP form
-            document.getElementById('otpForm').addEventListener('submit', handleOTPVerification);
-            
-            // OTP inputs
-            const otpInputs = document.querySelectorAll('.otp-input');
-            otpInputs.forEach((input, index) => {
-                input.addEventListener('input', (e) => handleOTPInput(e, index));
-                input.addEventListener('keydown', (e) => handleOTPKeydown(e, index));
-            });
+            // OTP event listeners removed - using direct login authentication
         }
 
         function togglePassword() {
@@ -497,107 +421,39 @@
                 return;
             }
 
+            // Login successful - generate token and go to dashboard
+            const token = btoa(JSON.stringify({
+                userId: user.id,
+                email: user.email,
+                role: user.role,
+                exp: Math.floor(Date.now() / 1000) + (30 * 60)
+            }));
+            
+            localStorage.setItem('authToken', token);
             currentUser = user;
-            showOTP();
+            showDashboard();
             
             loginBtn.disabled = false;
             loginBtn.innerHTML = '🔐 Sign In';
         }
 
-        function handleOTPInput(e, index) {
-            const value = e.target.value;
-            
-            if (value && !/^\d$/.test(value)) {
-                e.target.value = '';
-                return;
-            }
-
-            if (value && index < 5) {
-                document.getElementById(`otp${index + 2}`).focus();
-            }
-        }
-
-        function handleOTPKeydown(e, index) {
-            if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                document.getElementById(`otp${index}`).focus();
-            }
-        }
-
-        async function handleOTPVerification(e) {
-            e.preventDefault();
-            
-            const otp = Array.from({length: 6}, (_, i) => 
-                document.getElementById(`otp${i + 1}`).value
-            ).join('');
-            
-            const otpBtn = document.getElementById('otpBtn');
-            const errorDiv = document.getElementById('otpError');
-            const successDiv = document.getElementById('otpSuccess');
-            
-            if (otp.length !== 6) {
-                showError('otpError', 'Please enter complete 6-digit OTP');
-                return;
-            }
-
-            otpBtn.disabled = true;
-            otpBtn.innerHTML = '🔄 Verifying...';
-            hideError('otpError');
-            hideError('otpSuccess');
-
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            // For demo, accept any 6-digit OTP
-            if (otp.length === 6) {
-                const token = btoa(JSON.stringify({
-                    userId: currentUser.id,
-                    email: currentUser.email,
-                    role: currentUser.role,
-                    exp: Math.floor(Date.now() / 1000) + (30 * 60)
-                }));
-                
-                localStorage.setItem('authToken', token);
-                
-                showSuccess('otpSuccess', 'OTP verified successfully! Redirecting...');
-                
-                setTimeout(() => {
-                    showDashboard();
-                }, 1500);
-            } else {
-                showError('otpError', 'Invalid OTP');
-                clearOTPInputs();
-            }
-            
-            otpBtn.disabled = false;
-            otpBtn.innerHTML = '✅ Verify OTP';
-        }
+        // OTP-related functions removed - using direct login authentication
 
         function showLogin() {
             document.getElementById('loginScreen').classList.remove('hidden');
-            document.getElementById('otpScreen').classList.add('hidden');
             document.getElementById('dashboardScreen').classList.add('hidden');
             document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
             clearForm('loginForm');
         }
 
-        function showOTP() {
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('otpScreen').classList.remove('hidden');
-            document.getElementById('dashboardScreen').classList.add('hidden');
-            document.getElementById('otpEmail').textContent = currentUser.email;
-            startOTPTimer();
-            clearOTPInputs();
-            document.getElementById('otp1').focus();
-        }
+        // OTP navigation function removed - using direct login authentication
 
         function showDashboard() {
             document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('otpScreen').classList.add('hidden');
             document.getElementById('dashboardScreen').classList.remove('hidden');
             document.body.style.background = '#F9FAFB';
             
-            if (otpTimer) {
-                clearInterval(otpTimer);
+            // OTP timer cleanup removed - not needed for direct login
             }
             
             populateDashboard();

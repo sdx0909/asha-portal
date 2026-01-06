@@ -4,14 +4,14 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingSpinner from './components/LoadingSpinner';
 import Login from './components/Login';
-import OTPVerification from './components/OTPVerification';
+// OTP verification component import removed
 import AdminDashboard from './pages/AdminDashboard';
 import ASHADashboard from './pages/ASHADashboard';
 import Unauthorized from './pages/Unauthorized';
 import './App.css';
 
 // Login flow states
-type LoginState = 'login' | 'otp' | 'authenticated';
+type LoginState = 'login' | 'authenticated';
 
 interface LoginData {
   userId: string;
@@ -23,14 +23,8 @@ function App() {
   const [loginState, setLoginState] = useState<LoginState>('login');
   const [loginData, setLoginData] = useState<LoginData | null>(null);
 
-  const handleLoginSuccess = (data: LoginData) => {
-    setLoginData(data);
-    setLoginState('otp');
-  };
-
-  const handleOTPSuccess = () => {
+  const handleLoginSuccess = async () => {
     setLoginState('authenticated');
-    // Navigation will be handled by the auth context
   };
 
   const handleBackToLogin = () => {
@@ -49,13 +43,6 @@ function App() {
               element={
                 loginState === 'login' ? (
                   <Login onLoginSuccess={handleLoginSuccess} />
-                ) : loginState === 'otp' && loginData ? (
-                  <OTPVerification
-                    userId={loginData.userId}
-                    email={loginData.email}
-                    onVerificationSuccess={handleOTPSuccess}
-                    onBack={handleBackToLogin}
-                  />
                 ) : (
                   <Navigate to="/" replace />
                 )

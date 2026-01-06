@@ -198,27 +198,4 @@ export const simulateLogin = (email: string, password: string): { success: boole
   };
 };
 
-/**
- * Generate mock OTP (for frontend simulation)
- */
-export const generateMockOTP = (): string => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-};
-
-/**
- * Simulate OTP verification (always returns success for demo)
- */
-export const simulateOTPVerification = (otp: string): { success: boolean; message: string } => {
-  // For demo purposes, accept any 6-digit OTP
-  if (otp && otp.length === 6 && /^\d+$/.test(otp)) {
-    return {
-      success: true,
-      message: 'OTP verified successfully'
-    };
-  }
-  
-  return {
-    success: false,
-    message: 'Invalid OTP'
-  };
-};
+// OTP simulation functions removed - using direct login authentication

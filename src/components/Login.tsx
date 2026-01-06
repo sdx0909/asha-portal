@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import type { LoginCredentials } from '../types/auth.types';
 
 interface LoginProps {
-  onLoginSuccess: (data: { userId: string; email: string; role: string }) => void;
+  onLoginSuccess: () => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
@@ -74,11 +74,8 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
       const response = await login(formData);
       
       if (response.success && response.data) {
-        onLoginSuccess({
-          userId: response.data.userId,
-          email: response.data.email,
-          role: response.data.role
-        });
+        // Login successful - user is now authenticated
+        onLoginSuccess();
       }
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.');

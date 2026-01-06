@@ -2,8 +2,6 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const { 
   login, 
-  verifyOTP, 
-  resendOTP, 
   logout, 
   getCurrentUser 
 } = require('../controllers/auth.controller');
@@ -23,40 +21,15 @@ const authLimiter = rateLimit({
   legacyHeaders: false
 });
 
-const otpLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 3, // limit each IP to 3 OTP requests per 5 minutes
-  message: {
-    success: false,
-    message: 'Too many OTP requests, please try again later.'
-  },
-  standardHeaders: true,
-  legacyHeaders: false
-});
+
 
 /**
  * @route   POST /api/auth/login
- * @desc    Authenticate user and initiate OTP verification
+ * @desc    Authenticate user and return JWT token
  * @access  Public
  * @body    { email, password }
  */
 router.post('/login', authLimiter, login);
-
-/**
- * @route   POST /api/auth/verify-otp
- * @desc    Verify OTP and return JWT token
- * @access  Public
- * @body    { userId, email, otp }
- */
-router.post('/verify-otp', authLimiter, verifyOTP);
-
-/**
- * @route   POST /api/auth/resend-otp
- * @desc    Resend OTP for verification
- * @access  Public
- * @body    { userId, email }
- */
-router.post('/resend-otp', otpLimiter, resendOTP);
 
 /**
  * @route   POST /api/auth/logout

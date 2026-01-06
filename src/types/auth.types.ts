@@ -21,33 +21,12 @@ export interface LoginResponse {
   success: boolean;
   message: string;
   data: {
-    userId: string;
-    email: string;
-    role: UserRole;
-    requiresOTP: boolean;
-    otp?: string; // Only in development mode
-  };
-}
-
-export interface OTPVerificationData {
-  userId: string;
-  email: string;
-  otp: string;
-}
-
-export interface OTPVerificationResponse {
-  success: boolean;
-  message: string;
-  data: {
     token: string;
     user: User;
   };
 }
 
-export interface ResendOTPData {
-  userId: string;
-  email: string;
-}
+// OTP-related types removed - using direct login authentication
 
 export interface AuthContextType {
   user: User | null;
@@ -55,8 +34,6 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (credentials: LoginCredentials) => Promise<LoginResponse>;
-  verifyOTP: (data: OTPVerificationData) => Promise<OTPVerificationResponse>;
-  resendOTP: (data: ResendOTPData) => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
 }
@@ -105,15 +82,7 @@ export interface FormState {
   touched: Record<string, boolean>;
 }
 
-// OTP related types
-export interface OTPState {
-  userId: string;
-  email: string;
-  timeRemaining: number;
-  canResend: boolean;
-  attempts: number;
-  maxAttempts: number;
-}
+// OTP-related context types removed
 
 // Fake JWT token structure (for frontend simulation)
 export interface FakeJWTPayload {
